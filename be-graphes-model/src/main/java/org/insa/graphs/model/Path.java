@@ -8,7 +8,7 @@ import java.util.List;
  * <p>
  * Class representing a path between nodes in a graph.
  * </p>
- * 
+ *
  * <p>
  * A path is represented as a list of {@link Arc} with an origin and not a list
  * of {@link Node} due to the multi-graph nature (multiple arcs between two
@@ -21,52 +21,110 @@ public class Path {
     /**
      * Create a new path that goes through the given list of nodes (in order),
      * choosing the fastest route if multiple are available.
-     * 
+     *
      * @param graph Graph containing the nodes in the list.
      * @param nodes List of nodes to build the path.
-     * 
+     *
      * @return A path that goes through the given list of nodes.
-     * 
+     *
      * @throws IllegalArgumentException If the list of nodes is not valid, i.e. two
      *         consecutive nodes in the list are not connected in the graph.
-     * 
-     * @deprecated Need to be implemented.
      */
     public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
-        List<Arc> arcs = new ArrayList<Arc>();
-        // TODO:
+        if (nodes.isEmpty()){
+            return new Path(graph);
+        } else if(nodes.size() == 1) {
+            return new Path(graph, nodes.get(0));
+        }
+
+        List<Arc> arcs = new ArrayList<>();
+
+        for (int i=0; i < nodes.size()-1; i++) {
+            Node graphNode = graph.get(nodes.get(i).getId());
+            List<Arc> successors = graphNode.getSuccessors();
+
+            double minTravelTime = Double.MAX_VALUE;
+            Arc fastestSuccessor = null;
+            boolean isValid = false;
+
+            for (Arc successor : successors) {
+                double currentMinTime = successor.getMinimumTravelTime();
+
+                if(successor.getDestination().equals(nodes.get(i+1))) {
+                    isValid = true;
+
+                    if(currentMinTime < minTravelTime){
+                        minTravelTime = currentMinTime;
+                        fastestSuccessor = successor;
+                    }
+                }
+            }
+
+            if (!isValid) throw new IllegalArgumentException();
+
+            arcs.add(fastestSuccessor);
+        }
         return new Path(graph, arcs);
     }
 
     /**
      * Create a new path that goes through the given list of nodes (in order),
      * choosing the shortest route if multiple are available.
-     * 
+     *
      * @param graph Graph containing the nodes in the list.
      * @param nodes List of nodes to build the path.
-     * 
+     *
      * @return A path that goes through the given list of nodes.
-     * 
+     *
      * @throws IllegalArgumentException If the list of nodes is not valid, i.e. two
      *         consecutive nodes in the list are not connected in the graph.
-     * 
-     * @deprecated Need to be implemented.
      */
     public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
-        List<Arc> arcs = new ArrayList<Arc>();
-        // TODO:
+        if (nodes.isEmpty()){
+            return new Path(graph);
+        } else if(nodes.size() == 1) {
+            return new Path(graph, nodes.get(0));
+        }
+
+        List<Arc> arcs = new ArrayList<>();
+
+        for (int i=0; i < nodes.size()-1; i++) {
+            Node graphNode = graph.get(nodes.get(i).getId());
+            List<Arc> successors = graphNode.getSuccessors();
+
+            double minDistance = Double.MAX_VALUE;
+            Arc shortestSuccessor = null;
+            boolean isValid = false;
+
+            for (Arc successor : successors) {
+                double currentMinDistance = successor.getLength();
+
+                if(successor.getDestination().equals(nodes.get(i+1))) {
+                    isValid = true;
+
+                    if(currentMinDistance < minDistance){
+                        minDistance = currentMinDistance;
+                        shortestSuccessor = successor;
+                    }
+                }
+            }
+
+            if (!isValid) throw new IllegalArgumentException();
+
+            arcs.add(shortestSuccessor);
+        }
         return new Path(graph, arcs);
     }
 
     /**
      * Concatenate the given paths.
-     * 
+     *
      * @param paths Array of paths to concatenate.
-     * 
+     *
      * @return Concatenated path.
-     * 
+     *
      * @throws IllegalArgumentException if the paths cannot be concatenated (IDs of
      *         map do not match, or the end of a path is not the beginning of the
      *         next).
@@ -105,7 +163,7 @@ public class Path {
 
     /**
      * Create an empty path corresponding to the given graph.
-     * 
+     *
      * @param graph Graph containing the path.
      */
     public Path(Graph graph) {
@@ -116,7 +174,7 @@ public class Path {
 
     /**
      * Create a new path containing a single node.
-     * 
+     *
      * @param graph Graph containing the path.
      * @param node Single node of the path.
      */
@@ -128,7 +186,7 @@ public class Path {
 
     /**
      * Create a new path with the given list of arcs.
-     * 
+     *
      * @param graph Graph containing the path.
      * @param arcs Arcs to construct the path.
      */
@@ -168,7 +226,7 @@ public class Path {
 
     /**
      * Check if this path is empty (it does not contain any node).
-     * 
+     *
      * @return true if this path is empty, false otherwise.
      */
     public boolean isEmpty() {
@@ -177,7 +235,7 @@ public class Path {
 
     /**
      * Get the number of <b>nodes</b> in this path.
-     * 
+     *
      * @return Number of nodes in this path.
      */
     public int size() {
@@ -186,7 +244,7 @@ public class Path {
 
     /**
      * Check if this path is valid.
-     * 
+     *
      * A path is valid if any of the following is true:
      * <ul>
      * <li>it is empty;</li>
@@ -195,54 +253,57 @@ public class Path {
      * consecutive arcs, the destination of the first one is the origin of the
      * second one.</li>
      * </ul>
-     * 
+     *
      * @return true if the path is valid, false otherwise.
-     * 
-     * @deprecated Need to be implemented.
      */
     public boolean isValid() {
-        // TODO:
-        return false;
+        return isEmpty()
+                || size() == 1
+                || (
+                        arcs.get(0).getOrigin().equals(origin)
+                                && arcs.get(0).getDestination().equals(arcs.get(1).getOrigin())
+                                && arcs.get(1).getDestination().equals(arcs.get(2).getOrigin())
+                );
     }
 
     /**
      * Compute the length of this path (in meters).
-     * 
+     *
      * @return Total length of the path (in meters).
-     * 
-     * @deprecated Need to be implemented.
      */
     public float getLength() {
-        // TODO:
-        return 0;
+        float count = 0;
+        for (Arc arc : arcs) {
+            count += arc.getLength();
+        }
+        return count;
     }
 
     /**
      * Compute the time required to travel this path if moving at the given speed.
-     * 
+     *
      * @param speed Speed to compute the travel time.
-     * 
+     *
      * @return Time (in seconds) required to travel this path at the given speed (in
      *         kilometers-per-hour).
-     * 
-     * @deprecated Need to be implemented.
      */
     public double getTravelTime(double speed) {
-        // TODO:
-        return 0;
+        return getLength() / (speed/3.6);
     }
 
     /**
      * Compute the time to travel this path if moving at the maximum allowed speed
      * on every arc.
-     * 
+     *
      * @return Minimum travel time to travel this path (in seconds).
-     * 
-     * @deprecated Need to be implemented.
      */
     public double getMinimumTravelTime() {
-        // TODO:
-        return 0;
+        double travelTime = 0;
+        for (Arc arc : arcs) {
+            int maximumSpeed = arc.getRoadInformation().getMaximumSpeed();
+            travelTime += arc.getLength() / (maximumSpeed/3.6);
+        }
+        return travelTime;
     }
 
 }

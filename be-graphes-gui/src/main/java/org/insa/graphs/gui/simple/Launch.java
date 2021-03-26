@@ -50,7 +50,7 @@ public class Launch {
     public static void main(String[] args) throws Exception {
 
         // Visit these directory to see the list of available files on Commetud.
-        final String mapName = "/home/commetud/3eme Annee MIC/Graphes-et-Algorithmes/Maps/insa.mapgr";
+        final String mapName = "C:/Users/OMman/IdeaProjects/be-graphes/be-graphes-gui/src/main/resources/maps/insa.mapgr";
         final String pathName = "/home/commetud/3eme Annee MIC/Graphes-et-Algorithmes/Paths/path_fr31insa_rangueil_r2.path";
 
         // Create a graph reader.
