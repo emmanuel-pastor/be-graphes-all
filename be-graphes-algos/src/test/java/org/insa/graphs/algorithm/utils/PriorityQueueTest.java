@@ -292,7 +292,7 @@ public abstract class PriorityQueueTest {
 
             Collections.sort(remains_in);
 
-            // Check that the copy is now empty, and that both list contains all
+            // Check that the copy is now empty, and that both lists contain all
             // elements.
             assertTrue(copyTree.isEmpty());
             assertEquals(remains_in, remains_cp);

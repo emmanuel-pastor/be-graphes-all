@@ -173,6 +173,10 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
 
     @Override
     public void remove(E x) throws ElementNotFoundException {
+        if(this.currentSize == 0) {
+            throw new ElementNotFoundException(x);
+        }
+
         //Find the index of the Node
         int index = findIndexOf(x, 0);
         if(index == -1) {
@@ -181,7 +185,20 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
 
         //Delete node
         //Replace empty node with furthest right node
-        //Move the node up or down to fix the binary tree
+        //array is supposed non empty at this point
+        E lastElement = array.get(array.size()-1);
+        arraySet(index, lastElement);
+        array.remove(array.size()-1);
+        this.currentSize--;
+
+        //Move the node up or down to fix the heap
+        boolean hasParent = index != 0;
+
+        if(hasParent && lastElement.compareTo(array.get(indexParent(index))) < 0) {
+            percolateUp(index);
+        } else {
+            percolateDown(index);
+        }
     }
 
     @Override
