@@ -135,9 +135,53 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
         this.percolateUp(index);
     }
 
+    private int findIndexOf(E x, int currentIndex) {
+        int iLeft = indexLeft(currentIndex);
+        int iRight = iLeft + 1;
+        boolean hasLeft = iLeft < this.currentSize;
+        boolean hasRight = iRight < this.currentSize;
+
+        if (x.compareTo(array.get(currentIndex)) == 0) {
+            return currentIndex;
+        }
+        else if(hasLeft && x.compareTo(array.get(iLeft)) == 0) {
+            return iLeft;
+        } else if (hasRight && x.compareTo(array.get(iRight)) == 0) {
+            return iRight;
+        }
+
+        boolean canBeRight = hasRight && x.compareTo(array.get(iRight)) > 0;
+        boolean canBeLeft = hasRight && x.compareTo(array.get(iLeft)) > 0;
+        int rightSearchIndex = -1;
+        int leftSearchIndex = -1;
+
+        if(canBeLeft) {
+            leftSearchIndex = findIndexOf(x, iLeft);
+        }
+        if (canBeRight){
+            rightSearchIndex = findIndexOf(x, iRight);
+        }
+
+        if(rightSearchIndex == -1 && leftSearchIndex == -1) {
+            return -1;
+        }
+        if(rightSearchIndex != -1) {
+            return rightSearchIndex;
+        }
+        return leftSearchIndex;
+    }
+
     @Override
     public void remove(E x) throws ElementNotFoundException {
-        // TODO:
+        //Find the index of the Node
+        int index = findIndexOf(x, 0);
+        if(index == -1) {
+            throw new ElementNotFoundException(x);
+        }
+
+        //Delete node
+        //Replace empty node with furthest right node
+        //Move the node up or down to fix the binary tree
     }
 
     @Override
@@ -149,7 +193,7 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
 
     @Override
     public E deleteMin() throws EmptyPriorityQueueException {
-        E minItem = findMin();
+        E minItem = array.get(findIndexOf(findMin(), 0));
         E lastItem = this.array.get(--this.currentSize);
         this.arraySet(0, lastItem);
         this.percolateDown(0);
