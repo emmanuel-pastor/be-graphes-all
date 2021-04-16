@@ -3,6 +3,7 @@ package org.insa.graphs.algorithm.shortestpath;
 import org.insa.graphs.algorithm.AbstractSolution;
 import org.insa.graphs.algorithm.utils.BinaryHeap;
 import org.insa.graphs.algorithm.utils.ElementNotFoundException;
+import org.insa.graphs.algorithm.utils.EmptyPriorityQueueException;
 import org.insa.graphs.model.*;
 
 import java.util.ArrayList;
@@ -34,9 +35,16 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         // Notify observers about the first event (origin processed).
         notifyOriginProcessed(data.getOrigin());
 
-        int i = 0;
-        while (!labels[data.getDestination().getId()].isMarked() && i < nbNodes) {
-            Label currentNodeLabel = heap.findMin();
+        while (!labels[data.getDestination().getId()].isMarked()) {
+            Label currentNodeLabel;
+            try {
+                currentNodeLabel = heap.findMin();
+            } catch (EmptyPriorityQueueException e) {
+                // Means that no new node was marked after the previous one
+                // And the previous node was the only one visited but not marked
+                // Means we reached and mark all nodes that we can visit
+                break;
+            }
 
             // Mark the node
             try {
@@ -73,7 +81,6 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
                     }
                 }
             }
-            i++;
         }
 
         ShortestPathSolution solution;
