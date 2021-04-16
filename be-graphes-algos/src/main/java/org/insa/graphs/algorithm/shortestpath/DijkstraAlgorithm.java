@@ -45,6 +45,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
             labels[currentNodeLabel.getNodeId()].setMarked(true);
 
             for (Arc successor : graph.get(currentNodeLabel.getNodeId()).getSuccessors()) {
+                if(!data.isAllowed(successor)) continue;
+
                 int nextNodeId = successor.getDestination().getId();
                 if (!labels[nextNodeId].isMarked()) {
                     double w = data.getCost(successor);
