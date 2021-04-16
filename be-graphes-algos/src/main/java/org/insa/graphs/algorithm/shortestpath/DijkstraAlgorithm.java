@@ -1,5 +1,6 @@
 package org.insa.graphs.algorithm.shortestpath;
 
+import org.insa.graphs.algorithm.AbstractInputData;
 import org.insa.graphs.algorithm.AbstractSolution;
 import org.insa.graphs.algorithm.utils.BinaryHeap;
 import org.insa.graphs.algorithm.utils.ElementNotFoundException;
@@ -102,7 +103,13 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
             Collections.reverse(pathNodes);
 
             // Create the final solution.
-            Path solutionPath = Path.createShortestPathFromNodes(graph, pathNodes);
+            Path solutionPath;
+            if (data.getMode().equals(AbstractInputData.Mode.LENGTH)) {
+                solutionPath = Path.createShortestPathFromNodes(graph, pathNodes);
+            } else {
+                solutionPath = Path.createFastestPathFromNodes(graph, pathNodes);
+            }
+
             solution = new ShortestPathSolution(data, AbstractSolution.Status.OPTIMAL, solutionPath);
         }
 
