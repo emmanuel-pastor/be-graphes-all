@@ -257,13 +257,15 @@ public class Path {
      * @return true if the path is valid, false otherwise.
      */
     public boolean isValid() {
+        boolean isValid = true;
+        for (int i=0; i < arcs.size()-1; i++) {
+            isValid = arcs.get(i).getDestination().equals(arcs.get(i+1).getOrigin());
+            if (!isValid) break;
+        }
+
         return isEmpty()
                 || size() == 1
-                || (
-                        arcs.get(0).getOrigin().equals(origin)
-                                && arcs.get(0).getDestination().equals(arcs.get(1).getOrigin())
-                                && arcs.get(1).getDestination().equals(arcs.get(2).getOrigin())
-                );
+                || (arcs.get(0).getOrigin().equals(origin) && isValid);
     }
 
     /**
