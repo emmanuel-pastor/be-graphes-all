@@ -12,6 +12,22 @@ import org.insa.graphs.model.AccessRestrictions.AccessRestriction;
 
 public class ArcInspectorFactory {
 
+    public enum FilterType {
+        ALL_ROADS_AND_LENGTH(0),
+        ONLY_CARS_AND_LENGTH(1),
+        ALL_ROADS_AND_TIME(2),
+        ONLY_CARS_AND_TIME(3),
+        PEDESTRIAN_AND_TIME(4);
+
+        private final int value;
+
+        FilterType(final int value) {
+            this.value = value;
+        }
+
+        public int getValue() { return value; }
+    }
+
     /**
      * @return List of all arc filters in this factory.
      */
@@ -20,7 +36,7 @@ public class ArcInspectorFactory {
 
         // Common filters:
 
-        // No filter (all arcs allowed):
+        // No filter (all arcs allowed) and length:
         filters.add(new ArcInspector() {
             @Override
             public boolean isAllowed(Arc arc) {
@@ -78,8 +94,7 @@ public class ArcInspectorFactory {
             }
         });
 
-        // Only road allowed for cars and time:
-
+        // All roads allowed and time
         filters.add(new ArcInspector() {
             @Override
             public boolean isAllowed(Arc arc) {
@@ -107,6 +122,7 @@ public class ArcInspectorFactory {
             }
         });
 
+        // Only road allowed for cars and time:
         filters.add(new ArcInspector() {
             @Override
             public boolean isAllowed(Arc arc) {
@@ -136,7 +152,7 @@ public class ArcInspectorFactory {
             }
         });
 
-        // Non-private roads for pedestrian and bicycle:
+        // Non-private roads for pedestrian and bicycle and time:
         filters.add(new ArcInspector() {
 
             @Override

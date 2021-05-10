@@ -3,6 +3,7 @@ package org.insa.graphs.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -14,7 +15,6 @@ import java.util.List;
  * of {@link Node} due to the multi-graph nature (multiple arcs between two
  * nodes) of the considered graphs.
  * </p>
- *
  */
 public class Path {
 
@@ -24,23 +24,21 @@ public class Path {
      *
      * @param graph Graph containing the nodes in the list.
      * @param nodes List of nodes to build the path.
-     *
      * @return A path that goes through the given list of nodes.
-     *
      * @throws IllegalArgumentException If the list of nodes is not valid, i.e. two
-     *         consecutive nodes in the list are not connected in the graph.
+     *                                  consecutive nodes in the list are not connected in the graph.
      */
     public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
-        if (nodes.isEmpty()){
+        if (nodes.isEmpty()) {
             return new Path(graph);
-        } else if(nodes.size() == 1) {
+        } else if (nodes.size() == 1) {
             return new Path(graph, nodes.get(0));
         }
 
         List<Arc> arcs = new ArrayList<>();
 
-        for (int i=0; i < nodes.size()-1; i++) {
+        for (int i = 0; i < nodes.size() - 1; i++) {
             Node graphNode = graph.get(nodes.get(i).getId());
             List<Arc> successors = graphNode.getSuccessors();
 
@@ -51,10 +49,10 @@ public class Path {
             for (Arc successor : successors) {
                 double currentMinTime = successor.getMinimumTravelTime();
 
-                if(successor.getDestination().equals(nodes.get(i+1))) {
+                if (successor.getDestination().equals(nodes.get(i + 1))) {
                     isValid = true;
 
-                    if(currentMinTime < minTravelTime){
+                    if (currentMinTime < minTravelTime) {
                         minTravelTime = currentMinTime;
                         fastestSuccessor = successor;
                     }
@@ -74,23 +72,21 @@ public class Path {
      *
      * @param graph Graph containing the nodes in the list.
      * @param nodes List of nodes to build the path.
-     *
      * @return A path that goes through the given list of nodes.
-     *
      * @throws IllegalArgumentException If the list of nodes is not valid, i.e. two
-     *         consecutive nodes in the list are not connected in the graph.
+     *                                  consecutive nodes in the list are not connected in the graph.
      */
     public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
-        if (nodes.isEmpty()){
+        if (nodes.isEmpty()) {
             return new Path(graph);
-        } else if(nodes.size() == 1) {
+        } else if (nodes.size() == 1) {
             return new Path(graph, nodes.get(0));
         }
 
         List<Arc> arcs = new ArrayList<>();
 
-        for (int i=0; i < nodes.size()-1; i++) {
+        for (int i = 0; i < nodes.size() - 1; i++) {
             Node graphNode = graph.get(nodes.get(i).getId());
             List<Arc> successors = graphNode.getSuccessors();
 
@@ -101,10 +97,10 @@ public class Path {
             for (Arc successor : successors) {
                 double currentMinDistance = successor.getLength();
 
-                if(successor.getDestination().equals(nodes.get(i+1))) {
+                if (successor.getDestination().equals(nodes.get(i + 1))) {
                     isValid = true;
 
-                    if(currentMinDistance < minDistance){
+                    if (currentMinDistance < minDistance) {
                         minDistance = currentMinDistance;
                         shortestSuccessor = successor;
                     }
@@ -122,12 +118,10 @@ public class Path {
      * Concatenate the given paths.
      *
      * @param paths Array of paths to concatenate.
-     *
      * @return Concatenated path.
-     *
      * @throws IllegalArgumentException if the paths cannot be concatenated (IDs of
-     *         map do not match, or the end of a path is not the beginning of the
-     *         next).
+     *                                  map do not match, or the end of a path is not the beginning of the
+     *                                  next).
      */
     public static Path concatenate(Path... paths) throws IllegalArgumentException {
         if (paths.length == 0) {
@@ -141,7 +135,7 @@ public class Path {
             }
         }
         ArrayList<Arc> arcs = new ArrayList<>();
-        for (Path path: paths) {
+        for (Path path : paths) {
             arcs.addAll(path.getArcs());
         }
         Path path = new Path(paths[0].getGraph(), arcs);
@@ -176,7 +170,7 @@ public class Path {
      * Create a new path containing a single node.
      *
      * @param graph Graph containing the path.
-     * @param node Single node of the path.
+     * @param node  Single node of the path.
      */
     public Path(Graph graph, Node node) {
         this.graph = graph;
@@ -188,7 +182,7 @@ public class Path {
      * Create a new path with the given list of arcs.
      *
      * @param graph Graph containing the path.
-     * @param arcs Arcs to construct the path.
+     * @param arcs  Arcs to construct the path.
      */
     public Path(Graph graph, List<Arc> arcs) {
         this.graph = graph;
@@ -244,7 +238,7 @@ public class Path {
 
     /**
      * Check if this path is valid.
-     *
+     * <p>
      * A path is valid if any of the following is true:
      * <ul>
      * <li>it is empty;</li>
@@ -258,8 +252,8 @@ public class Path {
      */
     public boolean isValid() {
         boolean isValid = true;
-        for (int i=0; i < arcs.size()-1; i++) {
-            isValid = arcs.get(i).getDestination().equals(arcs.get(i+1).getOrigin());
+        for (int i = 0; i < arcs.size() - 1; i++) {
+            isValid = arcs.get(i).getDestination().equals(arcs.get(i + 1).getOrigin());
             if (!isValid) break;
         }
 
@@ -285,12 +279,11 @@ public class Path {
      * Compute the time required to travel this path if moving at the given speed.
      *
      * @param speed Speed to compute the travel time.
-     *
      * @return Time (in seconds) required to travel this path at the given speed (in
-     *         kilometers-per-hour).
+     * kilometers-per-hour).
      */
     public double getTravelTime(double speed) {
-        return getLength() / (speed/3.6);
+        return getLength() / (speed / 3.6);
     }
 
     /**
@@ -303,9 +296,31 @@ public class Path {
         double travelTime = 0;
         for (Arc arc : arcs) {
             int maximumSpeed = arc.getRoadInformation().getMaximumSpeed();
-            travelTime += arc.getLength() / (maximumSpeed/3.6);
+            travelTime += arc.getLength() / (maximumSpeed / 3.6);
         }
         return travelTime;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Path path = (Path) o;
+        if (this.size() != path.size()) return false;
+
+        for (int i = 0; i < this.arcs.size(); i++) {
+            if (
+                    !(this.arcs.get(i).getOrigin().equals(path.arcs.get(i).getOrigin())
+                            && this.arcs.get(i).getDestination().equals(path.arcs.get(i).getDestination()))
+            ) return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(graph, origin, arcs);
+    }
 }
