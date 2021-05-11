@@ -18,3 +18,5 @@ doc
 *.mapgr
 *.path
 *.tgz
+!*/test/*.mapgr
+!*/test/*.path

@@ -14,6 +14,7 @@ import org.junit.runners.Parameterized;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,23 +53,25 @@ public abstract class ShortestPathAlgorithmTest {
     public static Collection<Object> data() throws Exception {
         Collection<Object> objects = new ArrayList<>();
 
+        final String basePath = (new File("").getAbsolutePath());
+
         // Get the Haute-Garonne test map
-        final String hauteGaronneMap = "C:/Users/OMman/IdeaProjects/be-graphes/be-graphes-gui/src/main/resources/maps/haute-garonne.mapgr";
+        final String hauteGaronneMapPathName = basePath + "/../be-graphes-gui/src/main/resources/maps/test/haute-garonne.mapgr";
         final GraphReader graphReader = new BinaryGraphReader(
-                new DataInputStream(new BufferedInputStream(new FileInputStream(hauteGaronneMap)))
+                new DataInputStream(new BufferedInputStream(new FileInputStream(hauteGaronneMapPathName)))
         );
         final Graph graph = graphReader.read();
 
         // Get the Haute-Garonne only roads for cars test solution
-        final String roadsForCarsPathName = "C:/Users/OMman/IdeaProjects/be-graphes/be-graphes-gui/src/main/resources/paths/path_fr31_roads_for_cars_test.path";
+        final String roadsForCarsPathName = basePath + "/../be-graphes-gui/src/main/resources/paths/test/path_fr31_roads_for_cars_test.path";
         ShortestPathSolution roadsForCarsSolution = createRegularTestSolution(graph, roadsForCarsPathName, FilterType.ONLY_CARS_AND_LENGTH);
 
         // Get the Haute-Garonne shortest path test solution
-        final String lengthTestPathName = "C:/Users/OMman/IdeaProjects/be-graphes/be-graphes-gui/src/main/resources/paths/path_fr31_length_test.path";
+        final String lengthTestPathName = basePath + "/../be-graphes-gui/src/main/resources/paths/test/path_fr31_length_test.path";
         ShortestPathSolution lengthTestSolution = createRegularTestSolution(graph, lengthTestPathName, FilterType.ALL_ROADS_AND_LENGTH);
 
         // Get the Haute-Garonne fastest path test solution
-        final String timeTestPathName = "C:/Users/OMman/IdeaProjects/be-graphes/be-graphes-gui/src/main/resources/paths/path_fr31_time_test.path";
+        final String timeTestPathName = basePath + "/../be-graphes-gui/src/main/resources/paths/test/path_fr31_time_test.path";
         ShortestPathSolution timeTestSolution = createRegularTestSolution(graph, timeTestPathName, FilterType.ALL_ROADS_AND_TIME);
 
         /* Haute-Garonne origin equals destination */
