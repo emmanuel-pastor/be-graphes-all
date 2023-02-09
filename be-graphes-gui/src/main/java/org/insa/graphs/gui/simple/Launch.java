@@ -44,8 +44,8 @@ public class Launch {
     public static void main(String[] args) throws Exception {
 
         // Visit these directory to see the list of available files on Commetud.
-        final String mapName = "C:/Users/OMman/IdeaProjects/be-graphes/be-graphes-gui/src/main/resources/maps/haute-garonne.mapgr";
-        final String pathName = "C:/Users/OMman/IdeaProjects/be-graphes/be-graphes-gui/src/main/resources/paths/path_fr31_insa_bikini_canal.path";
+        final String mapName = System.getProperty("user.dir") + "/be-graphes-gui/src/main/resources/maps/test/haute-garonne.mapgr";
+        final String pathName = System.getProperty("user.dir") + "/be-graphes-gui/src/main/resources/paths/test/path_fr31_roads_for_cars_test.path";
 
         // Create a graph reader.
         final GraphReader reader = new BinaryGraphReader(
